@@ -4,7 +4,7 @@ import { useSignedInProvider } from ".";
 
 export const SignedInDropdown = () => {
   const { isOpen, handleClose, handleOpen } = useToggle();
-  const { handleOpenProfile } = useSignedInProvider();
+  const { handleOpenProfile, handleOpenSignOut } = useSignedInProvider();
 
   const handleItemClick = () => {
     handleClose();
@@ -22,7 +22,13 @@ export const SignedInDropdown = () => {
               handleOpenProfile();
             }}
           />
-          <DropDownContainer.Item label="Log out" />
+          <DropDownContainer.Item
+            label="Log out"
+            onClick={() => {
+              handleItemClick();
+              handleOpenSignOut();
+            }}
+          />
         </DropDownContainer.Content>
       </DropDownContainer>
     </div>

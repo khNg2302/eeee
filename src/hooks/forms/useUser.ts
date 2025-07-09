@@ -7,6 +7,7 @@ const auth = getAuth();
 
 export enum UserAuthState {
     Signed_In = "Signed_In",
+    Un_Auth = "Un_Auth",
     Sign_In = "Sign_In",
     Sign_Up = "Sign_up"
 }
@@ -14,6 +15,7 @@ export enum UserAuthState {
 export const useUser = () => {
     const { isOpen: isOpenAuthForm, handleClose: handleCloseAuthFormModal, handleOpen: handleOpenAuthForm } = useToggle()
     const [userAuthState, setUserAuthState] = useState<UserAuthState>()
+    const [user, setUser] = useState<unknown>()
 
     const handleOpenSignIn = () => {
         handleOpenAuthForm()
@@ -27,7 +29,6 @@ export const useUser = () => {
 
     const handleCloseAuthForm = () => {
         handleCloseAuthFormModal()
-        setUserAuthState(undefined)
     }
 
     const handleChangeStateSignUp = () => {
@@ -35,19 +36,26 @@ export const useUser = () => {
     }
 
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/auth.user
-                console.log(user)
-                setUserAuthState(UserAuthState.Signed_In)
+                setUser(user)
                 // ...
             } else {
+                setUser(null)
                 // User is signed out
                 // ...
             }
         });
+
     }, [])
 
-    return { isOpenAuthForm, handleCloseAuthForm, handleOpenSignIn, handleOpenSignUp, handleChangeStateSignUp, userAuthState }
+    useEffect(() => {
+        if (!isOpenAuthForm && user !== undefined) {
+            setUserAuthState(user ? UserAuthState.Signed_In : UserAuthState.Un_Auth)
+        }
+    }, [isOpenAuthForm, user])
+
+    return { isOpenAuthForm, user, handleCloseAuthForm, handleOpenSignIn, handleOpenSignUp, handleChangeStateSignUp, userAuthState }
 }

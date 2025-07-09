@@ -3,17 +3,19 @@ import { OnChangeInput } from "@/type/formInput"
 import { AuthInfo } from "@/type/user"
 import { debounce } from "@/utils/debounce"
 import { FormikConfig, FormikValues } from "formik"
+import { useRequest } from "../useRequest"
 
 export const useSignIn = () => {
     const debounceFunc = debounce((value) => {
         console.log(value)
     }, 300)
+    const { request, loading } = useRequest()
     const checkUsernameExisted = (value: string) => {
         debounceFunc(value)
         return value
     }
     const onSubmit: FormikConfig<FormikValues>['onSubmit'] = async (values: FormikValues) => {
-        const response = await emailAndPasswordSignIn(values as AuthInfo)
+        const response = await request({ service: () => emailAndPasswordSignIn(values as AuthInfo) })
         return response
     }
     const propsFields = {
@@ -21,5 +23,5 @@ export const useSignIn = () => {
             onChange: checkUsernameExisted as OnChangeInput<string>
         }
     }
-    return { propsFields, onSubmit }
+    return { propsFields, onSubmit, loading }
 }

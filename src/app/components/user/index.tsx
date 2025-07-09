@@ -15,7 +15,7 @@ export const User = () => {
     userAuthState,
   } = useUser();
 
-  if (userAuthState === undefined) return null;
+  if (userAuthState === undefined) return <div>loading...</div>;
 
   return (
     <UserContext.Provider value={{ handleChangeStateSignUp } as UserContext}>

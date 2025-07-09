@@ -1,15 +1,9 @@
-import { ReactNode } from "react";
 import { FloatContainer } from "../FloatComponent";
-
-export type ModalI = {
-  children: ReactNode;
-  isOpen: boolean;
-  handleClose: () => void;
-};
+import { ModalI, ModalProvider } from "./ModalProvider";
 
 export const Modal = ({ children, isOpen, handleClose }: ModalI) => {
   return (
-    <>
+    <ModalProvider isOpen={isOpen} handleClose={handleClose}>
       {isOpen && (
         <FloatContainer.CenterBox isOpen={isOpen} handleClose={handleClose}>
           <div className="relative shadow  max-w-full rounded-[1rem] p-[1rem] bg-white">
@@ -23,6 +17,6 @@ export const Modal = ({ children, isOpen, handleClose }: ModalI) => {
           </div>
         </FloatContainer.CenterBox>
       )}
-    </>
+    </ModalProvider>
   );
 };
